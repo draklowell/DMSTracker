@@ -1,0 +1,5 @@
+/venv
+config.yml
+data.pickle
+__pycache__
+/.idea
