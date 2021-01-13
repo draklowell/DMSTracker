@@ -2,6 +2,7 @@ import curses
 
 from .console import Console
 from datetime import datetime
+from config import config
 
 INFO = 1
 WARNING = 2
@@ -14,6 +15,7 @@ class Logger:
         self.console = console
         self.level = level
         self.parent = parent
+        self.show_prefix = True
         self.console.setPair(1, curses.COLOR_WHITE, curses.COLOR_BLACK)
         self.console.setPair(2, curses.COLOR_YELLOW, curses.COLOR_BLACK)
         self.console.setPair(3, curses.COLOR_RED, curses.COLOR_BLACK)
@@ -34,14 +36,22 @@ class Logger:
     def create(self, level):
         return Logger(self.console, level, self)
 
+    def togglePrefix(self, status=True):
+        self.show_prefix = status
+
     def getPrefix(self):
-        if self.isRoot():
-            return datetime.now().strftime("[%Y-%m-%d %H:%M:%S]")
+        if self.show_prefix:
+            if self.isRoot():
+                return datetime.now().strftime(config["date_format"])
+            else:
+                return self.getParent().getPrefix() + " " + self.level
         else:
-            return self.getParent().getPrefix() + f"[{self.level}]"
+            return ""
 
     def log(self, level, text):
-        self.console.print(self.getPrefix() + " " + str(text), attr=curses.color_pair(level))
+        prefix = self.getPrefix()
+        prefix = f"[{prefix}] " if prefix else prefix
+        self.console.print( prefix + str(text), attr=curses.color_pair(level))
 
     def info(self, text):
         self.log(INFO, text)

@@ -1,5 +1,8 @@
 /venv
-config.yml
-data.pickle
+/config.yml
+/data.pickle
 __pycache__
 /.idea
+/main.spec
+/dist
+/build

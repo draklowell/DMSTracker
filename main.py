@@ -5,6 +5,7 @@ import traceback
 
 import base58
 
+import info
 from cli.console import Console
 from cli.logger import Logger
 from cli.commands import BaseCommandHandler
@@ -14,16 +15,8 @@ from tracker.handler import Handler
 from tracker.storage import PickleStorage
 from tracker.address import Address
 
-from utils.memory import size2string
+from utils import sizeToString, isInt
 from config import config
-
-
-def isInt(val):
-    try:
-        int(val)
-        return True
-    except ValueError:
-        return False
 
 
 class CommandHandler(BaseCommandHandler):
@@ -81,7 +74,7 @@ class CommandHandler(BaseCommandHandler):
             else:
                 shallLogger.error("Invalid using, please use: \"lookup [dms address]\" for forward lookup and \"lookup -r [ip address]\" for reverse lookup")
         elif command == "memory":
-            shallLogger.info(f"Currently memory used by storage: {size2string(sys.getsizeof(storage.storage))}")
+            shallLogger.info(f"Currently memory used by storage: {sizeToString(sys.getsizeof(storage.storage))}")
         elif command == "list":
             t = time.time()
             if len(args) > 0 and isInt(args[0]):
@@ -109,12 +102,16 @@ class CommandHandler(BaseCommandHandler):
 
 console = Console(CommandHandler())
 logger = Logger(console)
+logger.togglePrefix(False)
+logger.info(f"DMS Tracking Server [Ver. {info.VERSION}] by DrakLowell ( t.me/draklowell )")
+logger.info("License GNU General Public License v3.0")
+logger.togglePrefix(True)
 shallLogger = logger.create("SHELL")
-trackerLogger = logger.create("TRACKER")
+trackerLogger = logger.create("SERVER")
 
 storage = PickleStorage("data.pickle", True)
 addr = config["host"].split(":")
-server = Server(Address(addr[0], int(addr[1])), handler=Handler(storage, logger=trackerLogger))
+server = Server(Address(addr[0], int(addr[1])), handler=Handler(storage, logger=trackerLogger), logger=trackerLogger)
 server.mainloop()
 
 console.close()
