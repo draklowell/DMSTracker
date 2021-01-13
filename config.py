@@ -3,10 +3,7 @@ import yaml
 DEFAULT = """max_time_distance: 10
 host: "0.0.0.0:7702"
 timeout: 10
-debug:
-  use_date: true
-  date_format: "[%Y-%m-%d %H:%M:%S]"
-  level_format: "[{level}]"
+date_format: "%Y-%m-%d %H:%M:%S"
 """
 
 
