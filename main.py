@@ -15,7 +15,7 @@ from tracker.handler import Handler
 from tracker.storage import PickleStorage
 from tracker.address import Address
 
-from utils import sizeToString, isInt
+from utils import sizeToString, isInt, timeToString
 from config import config
 
 
@@ -62,14 +62,14 @@ class CommandHandler(BaseCommandHandler):
                     result = storage.reverseLookup(socket.inet_aton(args[0]))
                     shallLogger.info("IP ADDRESS\tDMS ADDRESS\tLAST SEEN")
                     for id, value in result:
-                        shallLogger.info(f"{args[0]}\t{base58.b58encode(id).decode('utf-8')}\t{int(t-value)} s ago")
+                        shallLogger.info(f"{args[0]}\t{base58.b58encode(id).decode('utf-8')}\t{timeToString(int(t-value))} ago")
                     shallLogger.info("TABLE END")
                 else:
                     result = storage.lookup(base58.b58decode(args[0]))
                     shallLogger.info("IP ADDRESS\tDMS ADDRESS\tLAST SEEN")
                     if result:
                         address, value = result
-                        shallLogger.info(f"{address.hostname}\t{args[0]}\t{int(t-value)} s ago")
+                        shallLogger.info(f"{address.hostname}\t{args[0]}\t{timeToString(int(t-value))} ago")
                     shallLogger.info("TABLE END")
             else:
                 shallLogger.error("Invalid using, please use: \"lookup [dms address]\" for forward lookup and \"lookup -r [ip address]\" for reverse lookup")
@@ -87,7 +87,7 @@ class CommandHandler(BaseCommandHandler):
                 r = storage.storage
             shallLogger.info("IP ADDRESS\tDMS ADDRESS\tLAST SEEN")
             for key, value in r.items():
-                shallLogger.info(f"{value[0]}\t{base58.b58encode(key).decode('utf-8')}\t{int(t-value[1])} s ago")
+                shallLogger.info(f"{value[0]}\t{base58.b58encode(key).decode('utf-8')}\t{timeToString(int(t-value[1]))} ago")
             shallLogger.info("TABLE END")
         elif command == "help":
             shallLogger.info(f"count [time limit] - get count of connected users")
@@ -105,6 +105,7 @@ logger = Logger(console)
 logger.togglePrefix(False)
 logger.info(f"DMS Tracking Server [Ver. {info.VERSION}] by DrakLowell ( t.me/draklowell )")
 logger.info("License GNU General Public License v3.0")
+logger.info()
 logger.togglePrefix(True)
 shallLogger = logger.create("SHELL")
 trackerLogger = logger.create("SERVER")

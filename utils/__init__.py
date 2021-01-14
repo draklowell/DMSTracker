@@ -1,4 +1,5 @@
 from . import version
+from fractions import Fraction
 
 
 def isInt(val):
@@ -17,3 +18,25 @@ def sizeToString(size):
         size /= power
         n += 1
     return str(size) + " " + power_labels[n] + 'B'
+
+
+def timeToString(time):
+    intervals = {
+        "years": 12,
+        'months': Fraction(30, 7),
+        'weeks': 7,
+        'days': 24,
+        'hours': 60,
+        'minutes': 60,
+        'seconds': 1,
+    }
+    int_powers = list(reversed(intervals.keys()))
+    n = 0
+    power = intervals[int_powers[n]]
+    while time >= power:
+        time = round(time/power)
+        n += 1
+        if n >= len(int_powers):
+            break
+        power = intervals[int_powers[n]]
+    return str(time) + " " + int_powers[n-1]

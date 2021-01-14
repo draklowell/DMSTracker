@@ -22,9 +22,3 @@ try:
 except:
     save_defaults()
     config = yaml.load(DEFAULT, Loader=yaml.FullLoader)
-
-
-"""
-class config:
-    max_time_distance = 10
-"""

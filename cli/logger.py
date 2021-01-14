@@ -48,19 +48,19 @@ class Logger:
         else:
             return ""
 
-    def log(self, level, text):
+    def log(self, level=INFO, text=""):
         prefix = self.getPrefix()
         prefix = f"[{prefix}] " if prefix else prefix
         self.console.print( prefix + str(text), attr=curses.color_pair(level))
 
-    def info(self, text):
+    def info(self, text=""):
         self.log(INFO, text)
 
-    def warning(self, text):
+    def warning(self, text=""):
         self.log(WARNING, text)
 
-    def error(self, text):
+    def error(self, text=""):
         self.log(ERROR, text)
 
-    def critical(self, text):
+    def critical(self, text=""):
         self.log(CRITICAL, text)
